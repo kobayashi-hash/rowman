@@ -1,17 +1,39 @@
-@default: help
+name: build
+on:
+    push:
+        branches:
+            - "**"
 
-App := 'Rowman'
-Version := `grep '^const VERSION = ' cmd/main/version.go | sed "s/^VERSION = \"\(.*\)\"/\1/g"`
+jobs:
+    build:
+        runs-on: ${{ matrix.os }}
+        strategy:
+            matrix:
+                os:
+                    - ubuntu-latest
+                    - macOS-latest
+                    - windows-latest
+        steps:
+            - name: Setup Go
+              uses: actions/setup-go@v5
+              with:
+                  go-version: 1.16
 
-# show help message
-@help:
-    echo "Build tool for {{ App }} {{ Version }} with Just"
-    echo "Usage: just <recipe>"
-    echo ""
-    just --list
+            - name: Setup Just
+              uses: extractions/setup-just@v3
+              with:
+                  just-version: '1.40.0'
 
-build: test
-    go build -o wildcherry cmd/main/rowman.go
+            - name: Checkout
+              uses: actions/checkout@v4
 
-test:
-    go test -covermode=count -coverprofile=coverage.out ./...
+            - name: Build
+              run: just build test
+
+            - name: Coveralls
+              uses: coverallsapp/github-action@v2.3.0
+              if: matrix.os == 'ubuntu-latest'
+              with:
+                  github-token: ${{ secrets.github_token }}
+                  file: coverage.out
+                  format: golang
