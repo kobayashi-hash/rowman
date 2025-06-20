@@ -1,8 +1,78 @@
 package main
 
-import ("testing")
+import (
+	"reflect"
+	"testing"
+    "strings"
+)
 
-func TestMain(t *testing.T) {
-    // 仮置きのテスト
-    t.Log("Hello, World! テスト仮置き")
+func TestHeadRows(t *testing.T) {
+	data := [][]string{ // 仮のcsvデータ
+		{"a", "b"},
+		{"c", "d"},
+		{"e", "f"},
+	}
+
+	got := headRows(data, 2) // 2行出力
+	want := [][]string{
+		{"a", "b"},
+		{"c", "d"},
+	}
+
+	if !reflect.DeepEqual(got, want) { // 比較
+		t.Errorf("headRows() = %v, want %v", got, want)
+	}
+}
+
+func TestFilter(t *testing.T) {
+	data := [][]string{
+		{"apple", "red"},
+		{"strawberry", "red"},
+		{"grape", "purple"},
+	}
+
+	got := filter(data, "red")
+	want := [][]string{
+		{"apple", "red"},
+        {"strawberry", "red"},
+	}
+
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("filter() = %v, want %v", got, want)
+	}
+}
+
+func TestHeadCols(t *testing.T) {
+	data := [][]string{
+		{"a", "b", "c"},
+		{"d", "e", "f"},
+	}
+
+	got := headCols(data, 2)
+	want := [][]string{
+		{"a", "b"},
+		{"d", "e"},
+	}
+
+	if !reflect.DeepEqual(got, want) {
+		t.Errorf("headCols() = %v, want %v", got, want)
+	}
+}
+
+func TestReadCSVFromStdin(t *testing.T) { // 標準入力から受け取ったcsvを出力できるか
+	input := "a,b,c\n1,2,3\n"
+	r := strings.NewReader(input)
+	records, err := readCSVFromStdin(r)
+	if err != nil {
+		t.Fatalf("readCSVFromStdin error: %v", err)
+	}
+
+	want := [][]string{
+		{"a", "b", "c"},
+		{"1", "2", "3"},
+	}
+
+	if !reflect.DeepEqual(records, want) {
+		t.Errorf("readCSVFromStdin = %v, want %v", records, want)
+	}
 }
