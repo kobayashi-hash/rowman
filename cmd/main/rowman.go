@@ -26,16 +26,17 @@ func buildFlagSet() (*flag.FlagSet, *options){
 	flags.BoolVarP(&opts.help,         "help",   "h", false,  "Print this message")
 	return flags, opts
 }
+
 // 他的オプション(countでオプションが指定されてる数を計算)
-func validateOpts(opts *options) {
+func validateOpts(opts *options) error{
     count := 0
     if opts.rowNum > 0 { count++ }
     if opts.colNum > 0 { count++ }
     if opts.filterText != ""{ count++ }
     if count != 1 {
-        fmt.Fprintln(os.Stderr, "Error: --rows, --cols, --filter の中から1つだけ指定してください")
-        os.Exit(1)
+		return fmt.Errorf("Please specify exactly one of --rows, --cols, or --filter.")
     }
+	return nil
 }
 
 // 標準入力からcsvを読み込み
@@ -86,31 +87,46 @@ func filter(records [][]string, keyword string) [][]string{
 	}
 	return result
 }
+// ファイル名の数をチェックする
+func validateArgs(args []string) error {
+	if len(args) > 1 {
+		return fmt.Errorf("only one CSV file can be specified")
+	}
+	return nil
+}
+
 
 func main(){
 	flags, opts := buildFlagSet();
 
-	err := flags.Parse(os.Args[1:])
-	if err != nil {
-		fmt.Println("Error parsing flags:", err)
-		os.Exit(1)
+	if 	err := flags.Parse(os.Args[1:]); err != nil {
+        log.Fatalf("Error parsing flags: %v", err)
 	}
 
 	// 排他的オプション
-	validateOpts(opts)
+	if err := validateOpts(opts); err != nil {
+        log.Fatalf("Error: %v", err)
+	}
+
+	// 入力ファイルの数をチェック（1つまで）
+	args := flags.Args()
+	if err := validateArgs(args); err != nil {
+        log.Fatalf("Error: %v", err)
+	}
 
 	// csv読み込み
 	var input *os.File
-	if len(flags.Args()) > 0 { // ファイル名が指定された時はファイル読み込みの結果を渡す.
+	if len(args) == 1 { // ファイル名が指定された時はファイル読み込みの結果を渡す.
 		var err error
 		input, err = os.Open(flags.Args()[0])
 		if err != nil {
 			log.Fatalf("Failed to open file: %v", err)
 		}
 		defer input.Close()
-	} else { // csv形式のテキストの場合はそのまま渡す.
+	} else {		    // csv形式のテキストの場合はそのまま渡す.
 		input = os.Stdin
 	}
+
 	records, err := readCSVFromStdin(input)
     if err != nil {
         log.Fatalf("Failed to read input: %v", err)
