@@ -1,0 +1,4 @@
+baseURL = "https://kobayashi-hash.github.io/rowman/"
+languageCode = "ja"
+title = "My Hugo Site"
+theme = "blowfish"
