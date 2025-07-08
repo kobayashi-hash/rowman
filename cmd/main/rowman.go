@@ -14,6 +14,7 @@ type options struct{
 	colNum int
 	filterText string
 	help bool
+	completion bool
 }
 
 func buildFlagSet() (*flag.FlagSet, *options){
@@ -24,6 +25,8 @@ func buildFlagSet() (*flag.FlagSet, *options){
 	flags.IntVarP(&opts.colNum,        "cols",   "c", 0,      "output the first N columns.")
 	flags.StringVarP(&opts.filterText, "filter", "f", "", "output only rows that contain the specified TEXT.")
 	flags.BoolVarP(&opts.help,         "help",   "h", false,  "Print this message")
+	flags.BoolVarP(&opts.completion, "generate-completions", "", false, "Generate shell completions")
+
 	return flags, opts
 }
 
@@ -33,6 +36,8 @@ func validateOpts(opts *options) error{
     if opts.rowNum > 0 { count++ }
     if opts.colNum > 0 { count++ }
     if opts.filterText != ""{ count++ }
+	if opts.help == true { count++ }
+	if opts.completion == true { count++}
     if count != 1 {
 		return fmt.Errorf("Please specify exactly one of --rows, --cols, or --filter.")
     }
@@ -107,6 +112,22 @@ func main(){
 	if err := validateOpts(opts); err != nil {
         log.Fatalf("Error: %v", err)
 	}
+
+	// helpの表示
+	if opts.help {
+		flags.Usage()
+		return
+	}
+
+	// 補完作成
+	if opts.completion {
+		if err := generateCompletions(flags, "rowman"); err != nil {
+			log.Fatalf("Failed to generate completions: %v", err)
+		}
+		fmt.Println("Completions generated successfully.")
+		return
+	}
+
 
 	// 入力ファイルの数をチェック（1つまで）
 	args := flags.Args()
