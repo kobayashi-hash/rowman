@@ -17,10 +17,20 @@ type options struct{
 	completion bool
 }
 
+func helpMessage(command string) string{
+	return fmt.Sprintf(`%s [OPTIONS] [csv_file]
+    -r, --rows <N>           output the first N rows
+    -c, --cols <N>           output the first N columns
+    -f, --filter <TEXT>      output only rows that contain the specified TEXT
+
+    -h, --help               Print this message`, command)
+}
+
+
 func buildFlagSet() (*flag.FlagSet, *options){
 	opts := &options{rowNum: 0, colNum:0, filterText:"", help:false}
 	flags := flag.NewFlagSet("rowman",flag.ContinueOnError)
-	//flag.Usage = func(){fmt.Println(helpMessage())}
+	flags.Usage = func(){fmt.Println(helpMessage("rowman"))}
 	flags.IntVarP(&opts.rowNum,        "rows",   "r", 0,      "output the first N rows.")
 	flags.IntVarP(&opts.colNum,        "cols",   "c", 0,      "output the first N columns.")
 	flags.StringVarP(&opts.filterText, "filter", "f", "", "output only rows that contain the specified TEXT.")

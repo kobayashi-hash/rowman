@@ -418,9 +418,9 @@ __start_completions()
 }
 
 if [[ $(type -t compopt) = "builtin" ]]; then
-    complete -o default -F __start_completions completions
+    complete -o default -F __start_completions rowman
 else
-    complete -o default -o nospace -F __start_completions completions
+    complete -o default -o nospace -F __start_completions rowman
 fi
 
 # ex: ts=4 sw=4 et filetype=sh
