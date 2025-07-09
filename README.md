@@ -1,11 +1,5 @@
 # rowman
-[![build](https://github.com/kobayashi-hash/rowman/actions/workflows/build.yaml/badge.svg)](https://github.com/kobayashi-hash/rowman/actions/workflows/build.yaml)
-
-[![pages-build-deployment](https://github.com/kobayashi-hash/rowman/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/kobayashi-hash/rowman/actions/workflows/pages/pages-build-deployment)
-
-[![Coverage Status](https://coveralls.io/repos/github/kobayashi-hash/rowman/badge.svg)](https://coveralls.io/github/kobayashi-hash/rowman)
-
-[![update version](https://github.com/kobayashi-hash/rowman/actions/workflows/update-version.yaml/badge.svg)](https://github.com/kobayashi-hash/rowman/actions/workflows/update-version.yaml)
+[![build](https://github.com/kobayashi-hash/rowman/actions/workflows/build.yaml/badge.svg)](https://github.com/kobayashi-hash/rowman/actions/workflows/build.yaml) [![pages-build-deployment](https://github.com/kobayashi-hash/rowman/actions/workflows/pages/pages-build-deployment/badge.svg)](https://github.com/kobayashi-hash/rowman/actions/workflows/pages/pages-build-deployment) [![Coverage Status](https://coveralls.io/repos/github/kobayashi-hash/rowman/badge.svg)](https://coveralls.io/github/kobayashi-hash/rowman) [![update version](https://github.com/kobayashi-hash/rowman/actions/workflows/update-version.yaml/badge.svg)](https://github.com/kobayashi-hash/rowman/actions/workflows/update-version.yaml)
 
 A CLI tool to process and filter CSV data.
 
